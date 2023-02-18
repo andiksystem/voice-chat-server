@@ -5,9 +5,7 @@
 package com.andikhermawan.voice.chat.server;
 
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
@@ -15,7 +13,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -55,6 +53,7 @@ public class ChatServerFrame extends javax.swing.JFrame {
             playerThread.start();
             startButton.setEnabled(false);
             stopButton.setEnabled(true);
+            portTextField.setEnabled(false);
         } catch (LineUnavailableException | SocketException ex) {
             Logger.getLogger(ChatServerFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -66,6 +65,7 @@ public class ChatServerFrame extends javax.swing.JFrame {
      */
     public ChatServerFrame() {
         initComponents();
+        portTextField.setText(String.valueOf(serverPort));
     }
 
     /**
@@ -80,6 +80,8 @@ public class ChatServerFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         startButton = new javax.swing.JButton();
         stopButton = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        portTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -100,6 +102,8 @@ public class ChatServerFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setText("Port");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -107,14 +111,18 @@ public class ChatServerFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 91, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(startButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(stopButton)))
+                        .addComponent(stopButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 91, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(portTextField)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -122,7 +130,11 @@ public class ChatServerFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(portTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(stopButton)
                     .addComponent(startButton))
@@ -134,6 +146,13 @@ public class ChatServerFrame extends javax.swing.JFrame {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
+        if ("".equals(portTextField.getText())) {
+            JOptionPane.showMessageDialog(this, "Port harus diisi", "Info", JOptionPane.INFORMATION_MESSAGE);
+            portTextField.requestFocus();
+            return;
+        }
+
+        serverPort = Integer.parseInt(portTextField.getText());
         initAudio();
     }//GEN-LAST:event_startButtonActionPerformed
 
@@ -142,10 +161,13 @@ public class ChatServerFrame extends javax.swing.JFrame {
         VoiceChatServer.setCalling(false);
         startButton.setEnabled(true);
         stopButton.setEnabled(false);
+        portTextField.setEnabled(true);
     }//GEN-LAST:event_stopButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JTextField portTextField;
     private javax.swing.JButton startButton;
     private javax.swing.JButton stopButton;
     // End of variables declaration//GEN-END:variables
